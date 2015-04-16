@@ -8,7 +8,7 @@ class AliOssServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__."../config/ali_oss.php" => config_path('ali_oss')
+            __DIR__."/../config/ali_oss.php" => config_path('ali_oss.php')
         ]);
     }
 
@@ -20,8 +20,8 @@ class AliOssServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bindShared('oss', function($app) {
-            $config = $app['config']['ali_oss'];
-            return new \ALIOSS($config->access_id, $config->access_key, $config->hostname);
+            $config = config('ali_oss');
+            return new \ALIOSS($config['access_id'], $config['access_key'], $config['hostname']);
         });
     }
 }
