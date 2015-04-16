@@ -1,0 +1,27 @@
+{
+  "name": "yixiang/laravel_ali_oss",
+  "description": "laravel encapsulation of aliyun oss sdk",
+  "version": "0.0.1",
+  "require": {
+    "illuminate/support": "5.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "3.7.*"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "carl",
+      "email": "zhouyxamp@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Yixiang\\LaravelAliOss\\": "src/",
+      "Yixiang\\LaravelAliOss\\Tests\\": "tests/"
+    },
+    "classmap": ["ali_oss_sdk_src/"]
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
