@@ -5,7 +5,7 @@ Included aliyun OSS SDK version: oss_php_sdk_20140625
 
 # Usage
 
-1. Add the following code to composer.json and run composer update.
+Add the following code to composer.json and run composer update.
 ```json
   "repositories": [
     {
@@ -20,16 +20,16 @@ Included aliyun OSS SDK version: oss_php_sdk_20140625
 }
 ```
 
-2. Add service provider in the providers array of your config/app.php
+Add service provider in the providers array of your config/app.php
 ``` php
 'Yixiang\LaravelAliOss\AliOssServiceProvider',
 ```
 
-3. Publish config file:
+Publish config file:
 ```bash
 php artisan vendor:publish
 ```
-4. Supply your OSS key in config/ali_oss.php
+Supply your OSS key in config/ali_oss.php
 
 To obtain an instance of ALIOSS just write:
 ``` php
