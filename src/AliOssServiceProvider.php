@@ -21,6 +21,8 @@ class AliOssServiceProvider extends ServiceProvider
     {
         $this->app->bindShared('oss', function($app) {
             $config = config('ali_oss');
+            // set sdk default log directory path to laravel logs dir.
+            define('ALI_LOG_PATH', storage_path('logs'));
             return new \ALIOSS($config['access_id'], $config['access_key'], $config['hostname']);
         });
     }
