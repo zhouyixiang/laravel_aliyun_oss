@@ -47,13 +47,14 @@ class AliOssAdapter extends AbstractAdapter
     }
 
     /**
-     * @param $path
+     * @param $location
      *
      * @return array
      */
-    private function getHeader($path)
+    private function getObjectMetaHeader($location)
     {
-        $response = $this->aliyunClient->get_object_meta($this->bucket, $path);
+        $response = $this->aliyunClient->get_object_meta($this->bucket, $location);
+
         return $response->header;
     }
 
@@ -78,6 +79,7 @@ class AliOssAdapter extends AbstractAdapter
         if ($res->isOK()) {
             return $res->header;
         } else {
+            $this->ifErrorMessageThenThrow($res);
             return false;
         }
     }
@@ -99,11 +101,17 @@ class AliOssAdapter extends AbstractAdapter
             'length' => strlen($contents),
         ];
         $location = $this->applyPathPrefix($path);
-        $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
+        $res = $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
         if (is_resource($resource)) {
             fclose($resource);
         }
-        return true;
+
+        if ($res->isOK()) {
+            return $res->header;
+        } else {
+            $this->ifErrorMessageThenThrow($res);
+            return false;
+        }
     }
 
     /**
@@ -123,8 +131,13 @@ class AliOssAdapter extends AbstractAdapter
         ];
 
         $location = $this->applyPathPrefix($path);
-        $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
-        return true;
+        $res = $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
+        if ($res->isOK()) {
+            return $res->header;
+        } else {
+            $this->ifErrorMessageThenThrow($res);
+            return false;
+        }
     }
 
     /**
@@ -145,8 +158,13 @@ class AliOssAdapter extends AbstractAdapter
         ];
 
         $location = $this->applyPathPrefix($path);
-        $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
-        return true;
+        $res = $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
+        if ($res->isOK()) {
+            return $res->header;
+        } else {
+            $this->ifErrorMessageThenThrow($res);
+            return false;
+        }
     }
 
     /**
@@ -370,7 +388,7 @@ class AliOssAdapter extends AbstractAdapter
     public function getMetadata($path)
     {
         $location = $this->applyPathPrefix($path);
-        $response = $this->getHeader($location);
+        $response = $this->getObjectMetaHeader($location);
         return $response;
     }
 
@@ -384,7 +402,7 @@ class AliOssAdapter extends AbstractAdapter
     public function getSize($path)
     {
         $location = $this->applyPathPrefix($path);
-        $response = $this->getHeader($location);
+        $response = $this->getObjectMetaHeader($location);
         return [
             'size' => $response['content-length'],
         ];
@@ -416,7 +434,7 @@ class AliOssAdapter extends AbstractAdapter
     public function getTimestamp($path)
     {
         $location = $this->applyPathPrefix($path);
-        $response = $this->getHeader($location);
+        $response = $this->getObjectMetaHeader($location);
         return [
             'timestamp' => $response['last-modified'],
         ];
@@ -435,5 +453,13 @@ class AliOssAdapter extends AbstractAdapter
         return [
             'visibility' => $this->acl,
         ];
+    }
+
+    private function ifErrorMessageThenThrow($res)
+    {
+        $parsed = \OSSUtil::parse_response($res);
+        if (isset($parsed['body']['Error']['Message'])) {
+            throw new \RuntimeException('OSS Error Message: ' . $parsed['body']['Error']['Message']);
+        }
     }
 }
