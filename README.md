@@ -36,3 +36,6 @@ To obtain an instance of ALIOSS just write:
 $aliOss = app('oss');
 ```
 
+# Credits
+Flysystem Adapter is based on twn39's.
+https://github.com/twn39/flysystem-aliyun-oss

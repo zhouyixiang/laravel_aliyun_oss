@@ -5,5 +5,4 @@ return [
     'hostname_internal' => env('OSS_HOSTNAME_INTERNAL', ''),
     'hostname_external' => env('OSS_HOSTNAME_EXTERNAL', ''),
     'hostname_custom' => env('OSS_HOSTNAME_CUSTOM', ''),
-    'bucket' => env('OSS_BUCKET_NAME', '')
 ];

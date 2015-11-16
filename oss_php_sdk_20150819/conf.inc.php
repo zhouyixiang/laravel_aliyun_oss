@@ -1,11 +1,8 @@
 <?php
-//个人测试
-//ACCESS_ID
 define('OSS_ACCESS_ID', '');
-
-//ACCESS_KEY
 define('OSS_ACCESS_KEY', '');
-
+define('OSS_ENDPOINT', '');
+define('OSS_TEST_BUCKET', '');
 
 //是否记录日志
 define('ALI_LOG', FALSE);
@@ -18,5 +15,3 @@ define('ALI_DISPLAY_LOG', FALSE);
 
 //语言版本设置
 define('ALI_LANG', 'zh');
-
-

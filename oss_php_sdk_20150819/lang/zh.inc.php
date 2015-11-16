@@ -66,6 +66,7 @@ define('OSS_COPY_OBJECT_SUCCESS','拷贝Object成功');
 define('OSS_COPY_OBJECT_FAILED', '拷贝Object失败');
 define('OSS_FILE_NOT_EXIST','文件不存在');
 define('OSS_FILE_PATH_IS_NOT_ALLOWED_EMPTY', '上传文件路径为空');
+define('OSS_INVALID_METHOD','Method值非法');
 
 /*%****************************************************************************************%*/
 //OSS object Group操作相关
