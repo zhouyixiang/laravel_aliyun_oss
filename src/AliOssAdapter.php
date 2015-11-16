@@ -72,7 +72,9 @@ class AliOssAdapter extends AbstractAdapter
             'content' => $contents,
             'length' => strlen($contents),
         ];
-        $res = $this->aliyunClient->upload_file_by_content($this->bucket, $path, $options);
+
+        $location = $this->applyPathPrefix($path);
+        $res = $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
         if ($res->isOK()) {
             return $res->header;
         } else {
@@ -96,7 +98,8 @@ class AliOssAdapter extends AbstractAdapter
             'content' => $contents,
             'length' => strlen($contents),
         ];
-        $this->aliyunClient->upload_file_by_content($this->bucket, $path, $options);
+        $location = $this->applyPathPrefix($path);
+        $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
         if (is_resource($resource)) {
             fclose($resource);
         }
@@ -118,7 +121,9 @@ class AliOssAdapter extends AbstractAdapter
             'content' => $contents,
             'length' => strlen($contents),
         ];
-        $this->aliyunClient->upload_file_by_content($this->bucket, $path, $options);
+
+        $location = $this->applyPathPrefix($path);
+        $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
         return true;
     }
 
@@ -138,7 +143,9 @@ class AliOssAdapter extends AbstractAdapter
             'content' => $contents,
             'length' => strlen($contents),
         ];
-        $this->aliyunClient->upload_file_by_content($this->bucket, $path, $options);
+
+        $location = $this->applyPathPrefix($path);
+        $this->aliyunClient->upload_file_by_content($this->bucket, $location, $options);
         return true;
     }
 
@@ -154,8 +161,11 @@ class AliOssAdapter extends AbstractAdapter
     {
         $options = [
         ];
-        $this->aliyunClient->copy_object($this->bucket, $path, $this->bucket, $newPath, $options);
-        $this->aliyunClient->delete_object($this->bucket, $path);
+
+        $location = $this->applyPathPrefix($path);
+        $newLocation = $this->applyPathPrefix($newPath);
+        $this->aliyunClient->copy_object($this->bucket, $location, $this->bucket, $newLocation, $options);
+        $this->aliyunClient->delete_object($this->bucket, $location);
         return true;
     }
 
@@ -171,7 +181,10 @@ class AliOssAdapter extends AbstractAdapter
     {
         $options = [
         ];
-        $this->aliyunClient->copy_object($this->bucket, $path, $this->bucket, $newPath, $options);
+
+        $location = $this->applyPathPrefix($path);
+        $newLocation = $this->applyPathPrefix($newPath);
+        $this->aliyunClient->copy_object($this->bucket, $location, $this->bucket, $newLocation, $options);
         return true;
     }
 
@@ -184,7 +197,8 @@ class AliOssAdapter extends AbstractAdapter
      */
     public function delete($path)
     {
-        $this->aliyunClient->delete_object($this->bucket, $path);
+        $location = $this->applyPathPrefix($path);
+        $this->aliyunClient->delete_object($this->bucket, $location);
         return true;
     }
 
@@ -210,7 +224,8 @@ class AliOssAdapter extends AbstractAdapter
      */
     public function createDir($dirName, Config $config)
     {
-        $this->aliyunClient->create_object_dir($this->bucket, $dirName);
+        $location = $this->applyPathPrefix($dirName);
+        $this->aliyunClient->create_object_dir($this->bucket, $location);
         return true;
     }
 
@@ -236,7 +251,8 @@ class AliOssAdapter extends AbstractAdapter
      */
     public function has($path)
     {
-        $response = $this->aliyunClient->is_object_exist($this->bucket, $path);
+        $location = $this->applyPathPrefix($path);
+        $response = $this->aliyunClient->is_object_exist($this->bucket, $location);
         return $response->status === 200;
     }
 
@@ -250,7 +266,8 @@ class AliOssAdapter extends AbstractAdapter
     public function read($path)
     {
         $options = [];
-        $res = $this->aliyunClient->get_object($this->bucket, $path, $options);
+        $location = $this->applyPathPrefix($path);
+        $res = $this->aliyunClient->get_object($this->bucket, $location, $options);
         return [
             'contents' => $res->body,
         ];
@@ -266,7 +283,8 @@ class AliOssAdapter extends AbstractAdapter
     public function readStream($path)
     {
         $options = [];
-        $res = $this->aliyunClient->get_object($this->bucket, $path, $options);
+        $location = $this->applyPathPrefix($path);
+        $res = $this->aliyunClient->get_object($this->bucket, $location, $options);
         $url = $res->header['oss-request-url'];
         $handle = fopen($url, 'r');
         return [
@@ -326,7 +344,7 @@ class AliOssAdapter extends AbstractAdapter
         } else {
             $delimiter = '/';
         }
-        $prefix = $directory . '/';
+        $prefix = $this->applyPathPrefix($directory) . '/';
         $next_marker = '';
         $maxkeys = 100;
         $options = [
@@ -351,7 +369,8 @@ class AliOssAdapter extends AbstractAdapter
      */
     public function getMetadata($path)
     {
-        $response = $this->getHeader($path);
+        $location = $this->applyPathPrefix($path);
+        $response = $this->getHeader($location);
         return $response;
     }
 
@@ -364,7 +383,8 @@ class AliOssAdapter extends AbstractAdapter
      */
     public function getSize($path)
     {
-        $response = $this->getHeader($path);
+        $location = $this->applyPathPrefix($path);
+        $response = $this->getHeader($location);
         return [
             'size' => $response['content-length'],
         ];
@@ -379,7 +399,8 @@ class AliOssAdapter extends AbstractAdapter
      */
     public function getMimetype($path)
     {
-        $response = $this->aliyunClient->get_object_meta($this->bucket, $path);
+        $location = $this->applyPathPrefix($path);
+        $response = $this->aliyunClient->get_object_meta($this->bucket, $location);
         return [
             'mimetype' => $response->header['_info']['content_type'],
         ];
@@ -394,7 +415,8 @@ class AliOssAdapter extends AbstractAdapter
      */
     public function getTimestamp($path)
     {
-        $response = $this->getHeader($path);
+        $location = $this->applyPathPrefix($path);
+        $response = $this->getHeader($location);
         return [
             'timestamp' => $response['last-modified'],
         ];
@@ -409,6 +431,7 @@ class AliOssAdapter extends AbstractAdapter
      */
     public function getVisibility($path)
     {
+        //$location = $this->applyPathPrefix($path);
         return [
             'visibility' => $this->acl,
         ];
