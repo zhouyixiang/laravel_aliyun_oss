@@ -1,7 +1,6 @@
 {
   "name": "yixiang/laravel_ali_oss",
   "description": "laravel wrapper of aliyun oss sdk",
-  "version": "0.0.1",
   "require": {
     "illuminate/support": "5.*",
     "league/flysystem": "1.0.*"
